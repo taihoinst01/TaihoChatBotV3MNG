@@ -27,7 +27,7 @@ var smallTalkMng = require('./routes/learning/smallTalkMng');
 var qna = require('./routes/qna/qnaMng');
 
 var Logger = require("./config/logConfig");
-var logger = Logger.CreateLogger();
+//var logger = Logger.CreateLogger();   //Azure반영시 logger사용 불가(2018.10.04:KSO)
 
 var app = express();
 
@@ -258,11 +258,11 @@ if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         if (req.session.sid) {
-            logger.info('[에러페이지] [message : %s] ', err);
+            //logger.info('[에러페이지] [message : %s] ', err);
             res.render('error');
         } else {
             var userId = req.session.sid;
-            logger.info('[에러페이지] [id : %s] [message : %s] ', userId, err);
+            //logger.info('[에러페이지] [id : %s] [message : %s] ', userId, err);
             res.render('error');
         }
     });
@@ -273,11 +273,11 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     if (req.session.sid) {
-        logger.info('[에러페이지] [message : %s] ', err);
+        //logger.info('[에러페이지] [message : %s] ', err);
         res.render('error');
     } else {
         var userId = req.session.sid;
-        logger.info('[에러페이지] [id : %s] [message : %s] ', userId, err);
+        //logger.info('[에러페이지] [id : %s] [message : %s] ', userId, err);
         res.render('error');
     }
 });
