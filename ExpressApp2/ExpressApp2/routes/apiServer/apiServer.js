@@ -12,7 +12,7 @@ var router = express.Router();
 
 //log start
 var Logger = require("../../config/logConfig");
-var logger = Logger.CreateLogger();
+//var logger = Logger.CreateLogger();   //Azure반영시 logger사용 불가(2018.10.04:KSO)
 //log end
 
 
@@ -44,7 +44,7 @@ router.get('/getChatSentence', function (req, res) {
             }
             catch(e) {
                 
-                logger.info('[에러]자동완성 api 응답 에러  [url : %s] [내용 : %s]', 'apiServer/getChatSentence',  e.message);
+                //logger.info('[에러]자동완성 api 응답 에러  [url : %s] [내용 : %s]', 'apiServer/getChatSentence',  e.message);
                 var apiFail = [
                     {
                         statusCode : 500
