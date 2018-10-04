@@ -18,7 +18,7 @@ var router = express.Router();
 
 //log start
 var Logger = require("../../config/logConfig");
-var logger = Logger.CreateLogger();
+//var logger = Logger.CreateLogger();   //Azure반영시 logger사용 불가(2018.10.04:KSO)
 //log end
 
 var luisUtil = require("../../config/luisUtil");
@@ -68,12 +68,12 @@ router.get('/synchronizeLuis', function (req, res) {
         var tmpObj = new Object();
         tmpObj.appId = selectedAppList[kk];
         
-        logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s] [앱 id : %s]', userId, 'luis/synchronizeLuis', 'luis app정보 조회 시작', selectedAppList[kk]);
+        //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s] [앱 id : %s]', userId, 'luis/synchronizeLuis', 'luis app정보 조회 시작', selectedAppList[kk]);
         //tmpObj.intentList = syncClient.get(HOST + '/luis/api/v2.0/apps/' + selectedAppList[kk] + '/versions/' + '0.1' + '/intents', options);
         var tmpLuisObj = syncClient.get(HOST + '/luis/api/v2.0/apps/' + selectedAppList[kk] + '/versions/' + '0.1' + '/models?skip=0&take=1000', options);
         tmpObj.obj = luisUtil.getIntentEntityList(tmpLuisObj.body, selectedAppList[kk]);
         luisObj.push(tmpObj);
-        logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s] [앱 id : %s]', userId, 'luis/synchronizeLuis', 'luis app정보 조회 완료', selectedAppList[kk]);
+        //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s] [앱 id : %s]', userId, 'luis/synchronizeLuis', 'luis app정보 조회 완료', selectedAppList[kk]);
         //selectedIntentList.push(tmpObj);
     }
     
@@ -83,28 +83,28 @@ router.get('/synchronizeLuis', function (req, res) {
         try {
             let pool = await dbConnect.getAppConnection(sql, req.session.appName, req.session.dbValue);
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db Intent 조회 시작');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db Intent 조회 시작');
             
             let getDBIntent_result = await pool.request()
                                                 .query("SELECT APP_ID, INTENT, INTENT_ID, REG_ID, REG_DT, MOD_ID, MOD_DT FROM TBL_LUIS_INTENT");   
             var sessionIntentList = getDBIntent_result.recordset;
             //req.session.intentList = sessionIntentList;
             
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'intent 조회 완료, db Entity 조회 시작');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'intent 조회 완료, db Entity 조회 시작');
             let getDBEntity_result = await pool.request()
                                                 .query("SELECT APP_ID, ENTITY_NAME, ENTITY_ID, REG_DT, MOD_DT FROM TBL_LUIS_ENTITY");     
             var sessionEntityList = getDBEntity_result.recordset;            
             //req.session.entityList = sessionEntityList;
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'entity 조회 완료, db child entity 조회 시작');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'entity 조회 완료, db child entity 조회 시작');
             let getDBEntityChild_result = await pool.request()
                                                 .query("SELECT ENTITY_ID, CHILDREN_ID, CHILDREN_NAME, SUB_LIST FROM TBL_LUIS_CHILD_ENTITY");      
             var sessionEntityChildList = getDBEntityChild_result.recordset;           
             //req.session.entityChildList = sessionEntityChildList;
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', ' db child entity 조회 완료');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', ' db child entity 조회 완료');
 
             //db, luis 동기화 start
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis 동기화 시작');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis 동기화 시작');
             var intentListTotal = [];
             var entityListTotal = [];
             var childrenListTotal = [];
@@ -116,7 +116,7 @@ router.get('/synchronizeLuis', function (req, res) {
 
             //var objLength =  ((intentListTotal.length>entityListTotal.length?intentListTotal.length:entityListTotal.length)>childrenListTotal.length?intentListTotal.length:childrenListTotal.length);
             
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis intent 비교');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis intent 비교');
             for (var jk=0; jk<intentListTotal.length; jk++) {
                 for (var aj=0; aj<sessionIntentList.length; aj++) {
                     if (intentListTotal[jk].id == sessionIntentList[aj].INTENT_ID && intentListTotal[jk].name == sessionIntentList[aj].INTENT) {
@@ -129,7 +129,7 @@ router.get('/synchronizeLuis', function (req, res) {
                 }
             }
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis entity 비교');
+            ///logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis entity 비교');
             for (var jk=0; jk<entityListTotal.length; jk++) {
                 for (var aj=0; aj<sessionEntityList.length; aj++) {
                     if (entityListTotal[jk].id == sessionEntityList[aj].ENTITY_ID && entityListTotal[jk].name == sessionEntityList[aj].ENTITY_NAME) {
@@ -142,7 +142,7 @@ router.get('/synchronizeLuis', function (req, res) {
                 }
             }
             
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis child entity 비교');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'db-luis child entity 비교');
             for (var jk=0; jk<childrenListTotal.length; jk++) {
                 for (var aj=0; aj<sessionEntityChildList.length; aj++) {
                     if (childrenListTotal[jk].childId == sessionEntityChildList[aj].CHILDREN_ID && childrenListTotal[jk].name == sessionEntityChildList[aj].CHILDREN_NAME
@@ -173,7 +173,7 @@ router.get('/synchronizeLuis', function (req, res) {
 
             //db, luis 동기화 end
             //--------------------------intent start --------------------------
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 intent db delete');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 intent db delete');
             for (var pp=0; pp<sessionIntentList.length; pp++) {
                 var intentQry = "DELETE FROM TBL_LUIS_INTENT WHERE 1=1 AND APP_ID = @appId AND INTENT_ID = @intentId AND INTENT = @intent; \n ";
 
@@ -185,7 +185,7 @@ router.get('/synchronizeLuis', function (req, res) {
                                                     .query(intentQry);
             }
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 intent db insert');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 intent db insert');
             for (var pp=0; pp<intentListTotal.length; pp++) {
                 var intentQry = "INSERT INTO TBL_LUIS_INTENT (APP_ID, INTENT, INTENT_ID, REG_ID, REG_DT) \n ";
                 intentQry += "VALUES(@appId, @intentName, @intentId, @reg_id, SWITCHOFFSET(getDate(), '+09:00')); ";
@@ -201,7 +201,7 @@ router.get('/synchronizeLuis', function (req, res) {
             //--------------------------intent end --------------------------
 
             //--------------------------entity start --------------------------
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 entity db delete');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 entity db delete');
             for (var pp=0; pp<sessionEntityList.length; pp++) {
                 var entityQry = "DELETE FROM TBL_LUIS_ENTITY WHERE 1=1 AND APP_ID = @appId AND ENTITY_ID = @entityId AND ENTITY_NAME = @entityName; \n ";
 
@@ -213,7 +213,7 @@ router.get('/synchronizeLuis', function (req, res) {
                                                     .query(entityQry);
             }
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 entity db insert');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 entity db insert');
             for (var pp=0; pp<entityListTotal.length; pp++) {
                 
                 var entityQry = "INSERT INTO TBL_LUIS_ENTITY (APP_ID, ENTITY_NAME, ENTITY_ID, ENTITY_TYPE, REG_DT) \n ";
@@ -230,7 +230,7 @@ router.get('/synchronizeLuis', function (req, res) {
             //--------------------------entity end --------------------------
 
             //--------------------------child Entity start --------------------------
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 child entity db delete');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 없고 db에 있는 child entity db delete');
             for (var pp=0; pp<sessionEntityChildList.length; pp++) {
                 var childEntityQry = "DELETE FROM TBL_LUIS_CHILD_ENTITY WHERE 1=1 AND ENTITY_ID = @entityId AND CHILDREN_ID = @childId AND CHILDREN_NAME = @childName; \n ";
 
@@ -242,7 +242,7 @@ router.get('/synchronizeLuis', function (req, res) {
                                                     .query(childEntityQry);
             }
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 child entity db insert');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', 'luis에 있고 db에 없는 child entity db insert');
             for (var pp=0; pp<childrenListTotal.length; pp++) {
                 //console.log("child -" + pp)
                 if (childrenListTotal[pp].typeId != 5) {//composite, hierarchy
@@ -333,10 +333,10 @@ router.get('/synchronizeLuis', function (req, res) {
             }
 
 
-            logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', '동기화 종료');
+            //logger.info('[알림]동기화  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/synchronizeLuis', '동기화 종료');
             res.redirect('/board/dashBoard');
         } catch (err) {
-            logger.info('[오류]동기화  [id : %s] [url : %s] [error : %s]', userId, 'luis/synchronizeLuis', err);
+            //logger.info('[오류]동기화  [id : %s] [url : %s] [error : %s]', userId, 'luis/synchronizeLuis', err);
             res.render('error');
         } finally {
             sql.close();
@@ -559,7 +559,7 @@ router.post('/createIntent', function (req, res) {
                         }
 
 
-                        logger.info('[알림]Intent 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent', '[' + intentName + '] 생성');
+                        //logger.info('[알림]Intent 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent', '[' + intentName + '] 생성');
                         res.send({success : true});
                         
                     })()
@@ -571,14 +571,14 @@ router.post('/createIntent', function (req, res) {
                 }
             }
             else if (tmpLuisObj.statusCode == 429) {
-                logger.info('[에러]루이스 Intent 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent',  'timeout!');
+                //logger.info('[에러]루이스 Intent 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent',  'timeout!');
                 res.send({success : false, message : '시간초과 입니다. 문제가 계속되면 관리자에게 문의하세요.'});
 
             } else if (tmpLuisObj.statusCode == 400 || tmpLuisObj.statusCode == 401) {
                 if (tmpLuisObj.body.error) {
                     var resultCode = tmpLuisObj.body.error.code;
                     var resultStr = tmpLuisObj.body.error.message;
-                    logger.info('[에러]루이스 Intent 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent',  resultCode + ' : ' + resultStr);
+                    //logger.info('[에러]루이스 Intent 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent',  resultCode + ' : ' + resultStr);
                     res.send({success : false, message : 'Intent 생성에 문제가 발생했습니다. 관리자에게 문의해주세요.'});
                 }
             }
@@ -586,7 +586,7 @@ router.post('/createIntent', function (req, res) {
     } 
     catch(err) 
     {
-        logger.info('[에러]인텐트 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent', err.message);
+        //logger.info('[에러]인텐트 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createIntent', err.message);
         res.send({error : true, message : '이상이 생겼습니다. 관리자에게 문의해주세요.'});
     }
     
@@ -640,7 +640,7 @@ router.post('/deleteIntent', function (req, res) {
                     } 
                     
 */
-                    logger.info('[알림]Intent 삭제  [id : %s] [url : %s] [이름 : %s] [intentId : %s]', userId, 'luis/deleteIntent', '[' + deleteIntentName + '] 삭제', deleteIntentId);
+                    //logger.info('[알림]Intent 삭제  [id : %s] [url : %s] [이름 : %s] [intentId : %s]', userId, 'luis/deleteIntent', '[' + deleteIntentName + '] 삭제', deleteIntentId);
                     res.send({success : true, message : '삭제했습니다.'});
                     
                 })()
@@ -652,7 +652,7 @@ router.post('/deleteIntent', function (req, res) {
             }
         }
         else if (tmpLuisObj.statusCode == 429) {
-            logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  'timeout!');
+            //logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  'timeout!');
             res.send({success : false, message : '시간초과 입니다. 문제가 계속되면 관리자에게 문의하세요.'});
 
         } 
@@ -660,12 +660,12 @@ router.post('/deleteIntent', function (req, res) {
             if (tmpLuisObj.body.error) {
                 var resultCode = tmpLuisObj.body.error.code;
                 var resultStr = tmpLuisObj.body.error.message;
-                logger.info('[에러]루이스 인텐트 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  resultCode + ' : ' + resultStr);
+                //logger.info('[에러]루이스 인텐트 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  resultCode + ' : ' + resultStr);
                 res.send({success : false, message : '인텐트 삭제중 문제가 발생했습니다. 관리자에게 문의해주세요.'});
             }
         }
     } catch(e) {
-        logger.info('[에러]루이스 인텐트 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteIntent', e.message);
+        //logger.info('[에러]루이스 인텐트 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteIntent', e.message);
         res.send({error : true, message : '루이스 인텐트 삭제 실패 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
 });
@@ -771,13 +771,13 @@ router.post('/getUtterInIntent', function (req, res) {
             if (tmpLuisObj.body.error) {
                 var resultCode = utterInfo.body.error.code;
                 var resultStr = utterInfo.body.error.message;
-                logger.info('[에러]intent의 utterance 조회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getUtterInIntent',  resultCode + ' : ' + resultStr);
+                //logger.info('[에러]intent의 utterance 조회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getUtterInIntent',  resultCode + ' : ' + resultStr);
                 res.send({success : false, message : 'intent의 utterance 조회중 문제가 발생했습니다. 관리자에게 문의해주세요.'});
             }
         }
             
     } catch(e) {
-        logger.info('[에러]intent의 utterance 조회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getUtterInIntent', e.message);
+        //logger.info('[에러]intent의 utterance 조회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getUtterInIntent', e.message);
         res.send({error : true, message : 'intent의 utterance 조회 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
             
@@ -843,7 +843,7 @@ router.post('/selectUtterList', function (req, res) {
         }
         
     } catch (e) {
-        logger.info('[에러]어터런스 조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectUtterList',  e.message);
+        //logger.info('[에러]어터런스 조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectUtterList',  e.message);
         res.send({error : true, message : '이상이 생겼습니다. 관리자에게 문의해주세요.'});
     }
 });
@@ -911,7 +911,7 @@ router.post('/getEntityList', function (req, res) {
        
         
     } catch (e) {
-        logger.info('[에러]엔티티 리스트 조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getEntityList',  e.message);
+        //logger.info('[에러]엔티티 리스트 조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getEntityList',  e.message);
         res.send({error : true, message : '이상이 생겼습니다. 관리자에게 문의해주세요.'});
     }
 });
@@ -1189,7 +1189,7 @@ router.post('/createEntity', function (req, res) {
                             {
                                 var resultCode = childEntityLuis.body.error.code;
                                 var resultStr = childEntityLuis.body.error.message;
-                                logger.info('[에러]루이스 child Entity 조회  [id : %s] [url : %s] [error : %s] [내용 : %s]', userId, 'luis/createEntity',  resultCode + ' : ' + resultStr, '방금 생성한 엔티티의 child entity목록을 가져오는데 실패했습니다.');
+                                //logger.info('[에러]루이스 child Entity 조회  [id : %s] [url : %s] [error : %s] [내용 : %s]', userId, 'luis/createEntity',  resultCode + ' : ' + resultStr, '방금 생성한 엔티티의 child entity목록을 가져오는데 실패했습니다.');
                                 res.send({success : false, message : '엔티티 조회에 실패했습니다. 앱 목록에서 다시 챗봇을 선택해 주세요.'});
                             }
                         }
@@ -1205,7 +1205,7 @@ router.post('/createEntity', function (req, res) {
                         req.session.entityChildList = getDBEntityChild_result.recordset;
 
 
-                        logger.info('[알림]Entity 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity', '[' + entityName + '] 생성');
+                        //logger.info('[알림]Entity 생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity', '[' + entityName + '] 생성');
                         res.send({success : true});
                         
                     })()
@@ -1217,14 +1217,14 @@ router.post('/createEntity', function (req, res) {
                 }
             }
             else if (tmpLuisObj.statusCode == 429) {
-                logger.info('[에러]루이스 엔티티 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity',  'timeout!');
+                //logger.info('[에러]루이스 엔티티 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity',  'timeout!');
                 res.send({success : false, message : '시간초과 입니다. 문제가 계속되면 관리자에게 문의하세요.'});
 
             } else if (tmpLuisObj.statusCode == 400 || tmpLuisObj.statusCode == 401) {
                 if (tmpLuisObj.body.error) {
                     var resultCode = tmpLuisObj.body.error.code;
                     var resultStr = tmpLuisObj.body.error.message;
-                    logger.info('[에러]루이스 엔티티 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity',  resultCode + ' : ' + resultStr);
+                    //logger.info('[에러]루이스 엔티티 생성 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity',  resultCode + ' : ' + resultStr);
                     res.send({success : false, message : '엔티티 생성에 문제가 발생했습니다. 관리자에게 문의해주세요.'});
                 }
             }
@@ -1232,7 +1232,7 @@ router.post('/createEntity', function (req, res) {
     } 
     catch(err) 
     {
-        logger.info('[에러]엔티티생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity', err.message);
+        //logger.info('[에러]엔티티생성  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/createEntity', err.message);
         res.send({error : true, message : '이상이 생겼습니다. 관리자에게 문의해주세요.'});
     }
     
@@ -1276,7 +1276,7 @@ router.post('/selectChildCompositeList', function (req, res) {
         }
         res.send({success : true, childCompositeList : childCompositeList});
     } catch(e) {
-        logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectChildCompositeList', e.message);
+        //logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectChildCompositeList', e.message);
         res.send({error : true, message : 'Composite child List조회 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
     //finally {}
@@ -1390,7 +1390,7 @@ router.post('/deleteEntity', function (req, res) {
                         */
                     }
 
-                    logger.info('[알림]Entity 삭제  [id : %s] [url : %s] [이름 : %s] [entityId : %s]', userId, 'luis/deleteEntity', '[' + deleteEntityName + '] 삭제', deleteEntityId);
+                    //logger.info('[알림]Entity 삭제  [id : %s] [url : %s] [이름 : %s] [entityId : %s]', userId, 'luis/deleteEntity', '[' + deleteEntityName + '] 삭제', deleteEntityId);
                     res.send({success : true, message : '삭제했습니다.'});
                     
                 })()
@@ -1402,7 +1402,7 @@ router.post('/deleteEntity', function (req, res) {
             }
         }
         else if (tmpLuisObj.statusCode == 429) {
-            logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  'timeout!');
+            //logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  'timeout!');
             res.send({success : false, message : '시간초과 입니다. 문제가 계속되면 관리자에게 문의하세요.'});
 
         } 
@@ -1410,12 +1410,12 @@ router.post('/deleteEntity', function (req, res) {
             if (tmpLuisObj.body.error) {
                 var resultCode = tmpLuisObj.body.error.code;
                 var resultStr = tmpLuisObj.body.error.message;
-                logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  resultCode + ' : ' + resultStr);
+                //logger.info('[에러]루이스 엔티티 삭제 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteEntity',  resultCode + ' : ' + resultStr);
                 res.send({success : false, message : '엔티티 생성에 문제가 발생했습니다. 관리자에게 문의해주세요.'});
             }
         }
     } catch(e) {
-        logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectChildCompositeList', e.message);
+        //logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/selectChildCompositeList', e.message);
         res.send({error : true, message : 'Composite child List조회 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
     //finally {}
@@ -1497,7 +1497,7 @@ router.post('/getChildEntity', function (req, res) {
         }
         res.send({success : true, selChildList : selChildList});
     } catch(e) {
-        logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getChildEntity', e.message);
+        //logger.info('[에러]composite child List조회  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/getChildEntity', e.message);
         res.send({error : true, message : ' child List조회 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
     //finally {}
@@ -1664,7 +1664,7 @@ router.post('/saveChangedEntity', function (req, res) {
                                                     .query("SELECT ENTITY_ID, CHILDREN_ID, CHILDREN_NAME, SUB_LIST FROM TBL_LUIS_CHILD_ENTITY");              
                             req.session.entityChildList = getDBEntityChild_result.recordset;
                             
-                            logger.info('[알림]Entity 수정  [id : %s] [url : %s] [이름 : %s] [entityId : %s]', userId, 'luis/saveChangedEntity', '[' + entityName + '] 수정', entityId);
+                            //logger.info('[알림]Entity 수정  [id : %s] [url : %s] [이름 : %s] [entityId : %s]', userId, 'luis/saveChangedEntity', '[' + entityName + '] 수정', entityId);
                             res.send({success : true, message : '저장했습니다.'});
 
                         }
@@ -1672,7 +1672,7 @@ router.post('/saveChangedEntity', function (req, res) {
                         {
                             var resultCode = childObj.body.error.code;
                             var resultStr = childObj.body.error.message;
-                            logger.info('[에러]루이스 child Entity 조회  [id : %s] [url : %s] [error : %s] [내용 : %s]', userId, 'luis/saveChangedEntity',  resultCode + ' : ' + resultStr, '방금 수정한 엔티티의 child entity목록을 가져오는데 실패했습니다.');
+                            //logger.info('[에러]루이스 child Entity 조회  [id : %s] [url : %s] [error : %s] [내용 : %s]', userId, 'luis/saveChangedEntity',  resultCode + ' : ' + resultStr, '방금 수정한 엔티티의 child entity목록을 가져오는데 실패했습니다.');
                             res.send({success : false, message : '엔티티 조회에 실패했습니다. 앱 목록에서 다시 챗봇을 선택해 주세요.'});
                         }
                     }
@@ -1684,7 +1684,7 @@ router.post('/saveChangedEntity', function (req, res) {
             }
         }
     } catch(e) {
-        logger.info('[에러] entity 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/saveChangedEntity', e.message);
+        //logger.info('[에러] entity 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/saveChangedEntity', e.message);
         res.send({error : true, message : ' 엔티티 저장 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
 });
@@ -1738,7 +1738,7 @@ router.post('/saveUtterance', function (req, res) {
                 rstChk = true;
                 var resultCode = luisResult[tmp].body.error.code;
                 var resultStr = luisResult[tmp].body.error.message;
-                logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [코드 : %s] [내용 : %s]', userId, 'luis/saveUtterance', luisResult[tmp].statusCode, resultCode + ':' + resultStr);
+                //logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [코드 : %s] [내용 : %s]', userId, 'luis/saveUtterance', luisResult[tmp].statusCode, resultCode + ':' + resultStr);
             } 
         }
 
@@ -1754,7 +1754,7 @@ router.post('/saveUtterance', function (req, res) {
             res.send({success : false, message : '실패했습니다. 관리자에게 문의해주세요.'});
         }
     } catch(e) {
-        logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/saveUtterance', e.message);
+        //logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/saveUtterance', e.message);
         res.send({error : true, message : ' 어터런스 저장 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
     
@@ -1786,7 +1786,7 @@ router.post('/deleteUtterance', function (req, res) {
             res.send({success : false, message : '실패했습니다. 관리자에게 문의해주세요.'});
         }
     } catch(e) {
-        logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteUtterance', e.message);
+        //logger.info('[에러] 어터런스 변경 저장  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/deleteUtterance', e.message);
         res.send({error : true, message : ' 어터런스 저장 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     } 
 });
@@ -1805,13 +1805,13 @@ router.post('/renameIntent', function (req, res) {
         if (tmpLuisObj.statusCode != 200) {
             var resultCode = tmpLuisObj.error.code;
             var resultStr = tmpLuisObj.error.message;
-            logger.info('[에러] intent rename  저장  [id : %s] [url : %s] [코드 : %s] [내용 : %s]', userId, 'luis/renameIntent', tmp.statusCode, resultCode + ':' + resultStr);
+            //logger.info('[에러] intent rename  저장  [id : %s] [url : %s] [코드 : %s] [내용 : %s]', userId, 'luis/renameIntent', tmp.statusCode, resultCode + ':' + resultStr);
             res.send({success : false, message : '실패했습니다. 관리자에게 문의해주세요.'});
         } else {
             res.send({success : true, message : '성공했습니다.'});
         }
     } catch(e) {
-        logger.info('[에러] intent rename   [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', e.message);
+        //logger.info('[에러] intent rename   [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', e.message);
         res.send({error : true, message : ' intent rename 중 이상이 생겼습니다. 관리자에게 문의 해주세요.'});
     }
 
@@ -2004,7 +2004,7 @@ router.post('/trainApp', function (req, res){
                 for(var trNum = 0; trNum < traninResultGet.body.length; trNum++) {
                     if(traninResultGet.body[trNum].details.status == "Fail") {
                         var failureReason = traninResultGet.body[trNum].details.failureReason;
-                        logger.info('[에러] train app   [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', failureReason);
+                        //logger.info('[에러] train app   [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', failureReason);
                         res.send({result:400, message:failureReason});
                     } else if(traninResultGet.body[trNum].details.status == "InProgress") {
                         break;
@@ -2026,7 +2026,7 @@ router.post('/trainApp', function (req, res){
                         res.send({result:200});
                     }
                     if (publishCount >= 3) {
-                        logger.info('[에러] publish app  3회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', '실패');
+                        //logger.info('[에러] publish app  3회 실패  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', '실패');
                         res.send({result:publishResult.statusCode, message:'publish 실패했습니다. 관리자에게 문의해주세요.'});
                     }
                 }
@@ -2034,7 +2034,7 @@ router.post('/trainApp', function (req, res){
 
 
         } catch (err) {
-            logger.info('[에러] publish & train err  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', err.message);
+            //logger.info('[에러] publish & train err  [id : %s] [url : %s] [내용 : %s]', userId, 'luis/renameIntent', err.message);
             res.send({result:400, message:'publish 실패했습니다. 관리자에게 문의해주세요.'});
         } finally {
             sql.close();
