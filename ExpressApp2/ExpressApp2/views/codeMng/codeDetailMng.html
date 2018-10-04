@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <%include  ../common/commonLib.html%>
+        <script src="/common/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/common/codeMng.js"></script>
+        <script>
+            $(document).ready(function () {
+                makeCodeDeatilTable();
+            });
+
+            function show_codeDetailForm() {
+                document.codeDetailForm.reset();
+                $('#footer_button').html('<button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Close</button><button type="button" class="btn btn-primary addDetailBtn" id="addDetailBtn"><i class="fa fa-edit"></i> Save</button>');
+                $('#codeDetailFormModal').modal('show');
+            }
+
+            function del_codeDetail() {
+                procCodeMaster('DEL');
+            }
+
+            function go_codeMasterList() {
+                var form = document.goDetailForm;
+
+                form.target = "_self";
+                form.action = "codeMasterMng";
+                form.submit();
+            }
+        </script>
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <input type="hidden" name="CDM_ID" id="CDM_ID" value='<%=CDM_ID%>' />
+    <div class="wrapper">
+
+        <!-- Header -->
+        <%include  ../header.html%>
+            <!-- //Header -->
+
+            <!-- Left Menu Side -->
+            <%include  ../leftSideBar_admin.html%>
+                <!--// Left Menu Side -->
+
+
+                <!-- Content Wrapper -->
+                <div class="content-wrapper">
+                    <section class="content-header">
+                        <h1>공통코드관리</h1>
+                    </section>
+
+                    <!-- Main content -->
+                    <section class="content">
+                        <div class="box  color-palette-box">
+                            <div class="box-body">
+
+                                <div class="row mt20">
+                                    <h4 class=" col-lg-6" id="detailCode_Title"></h4>
+                                    <div class=" col-lg-6" style="text-align:right">
+                                        <button type="button" class="btn btn-default" onClick="go_codeMasterList();">
+                                            <i class="fa fa-list"></i> Master Code List
+                                        </button>
+                                        <button type="button" class="btn btn-default" onClick="show_codeDetailForm();">
+                                            <i class="fa fa-save"></i> <%= __('ADD') %>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 공통코드 마스터 테이블 -->
+                                <div class="Tbl_wrap">
+                                    <table class="Tbl" summary="공통코드디테일목록">
+                                        <colgroup>
+                                            <col width="5%" />
+                                            <col width="10%" />
+                                            <col width="10%" />
+                                            <col width="10%" />
+                                            <col width="15%" />
+                                            <col width="5%" />
+                                            <col width="5%" />
+                                            <col width="10%" />
+                                            <col width="10%" />
+                                            <col width="10%" />
+                                            <col width="10%" />
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>코드셋 ID</th>
+                                                <th>코드</th>
+                                                <th>코드명</th>
+                                                <th>설명</th>
+                                                <th>순서</th>
+                                                <th>사용여부</th>
+                                                <th>문자열1</th>
+                                                <th>문자열2</th>
+                                                <th>문자열3</th>
+                                                <th>...</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="codeDetailTbody">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </section>
+                    <!-- //Main content -->
+
+                </div>
+                <!--// Content Wrapper -->
+
+
+                <!--  Footer -->
+                <%include  ../footer.html%>
+                    <!-- // Footer -->
+                    <!-- Modal -->
+                    <div class="modal fade" id="codeDetailFormModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">
+                                        <%=CDM_ID%>코드 디테일</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" name="codeDetailForm" id="codeDetailForm">
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Code ID</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="CDM_ID" name="CDM_ID" placeholder="Code ID" value="<%=CDM_ID%>"
+                                                    readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Code</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="CD" name="CD" placeholder="Code">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                                <label for="inputEmail3" class="col-sm-2 control-label">Language</label>
+                                                <div class="col-sm-10">
+                                                    <select name="LANG" id="LANG" class="form-control">
+                                                        <option value="EN" selected>영어</option>
+                                                        <option value="KO">한국어</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Code Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="CD_NM" name="CD_NM" placeholder="Code Name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Description</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="CD_EXPL" name="CD_EXPL" placeholder="Description">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">순서</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" class="form-control" id="CD_SEQ" name="CD_SEQ" placeholder="Code Order">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">문자열1</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="STR_1" name="STR_1" placeholder="문자열1">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">문자열2</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="STR_2" name="STR_2" placeholder="문자열2">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="inputEmail3" class="col-sm-2 control-label">문자열3</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="STR_3" name="STR_3" placeholder="문자열3">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer" id="footer_button">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        //iCheck for checkbox and radio inputs
+                        $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                            checkboxClass: 'icheckbox_minimal-blue',
+                            radioClass: 'iradio_minimal-blue'
+                        })
+                        //Red color scheme for iCheck
+                        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                            checkboxClass: 'icheckbox_minimal-red',
+                            radioClass: 'iradio_minimal-red'
+                        })
+                        //Flat red color scheme for iCheck
+                        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                            checkboxClass: 'icheckbox_flat-green',
+                            radioClass: 'iradio_flat-green'
+                        })
+
+                    </script>
+
+                    <form name="goDetailForm" id="goDetailForm">
+                        <input type="hidden" name="code_id" id="code_id">
+                    </form>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<aside class="main-sidebar">
+    <section class="sidebar">
+        <div class="sidebar-form">ChatBot</div>
+        <!-- chat bot list -->
+        <div class="sidebar-form se02">
+                      
+                      <ul class="dropdown">
+                          <li class="dropdown tasks-menu" >
+                            <a class="admin_mtit"><%= __('ADMIN_SETTING') %></a>
+                          </li>
+                      </ul>
+      </div> 
+      <!-- //chat bot list -->  
+
+      <!-- left Menu -->
+      <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">Menu</li>
+            <li class="treeview" id="userMngClick"> <a href="/users/userMng"><i class="fa fa-edit"></i> <span><%= __('USER_MNG') %></span></a> </li>
+            <!--<li class="treeview" id="userAugthClick"> <a href="/users/userAuthMng"><i class="fa fa-lock"></i> <span><%= __('USER_AUTH_MNG') %></span></a> </li>-->
+            <!--<li class="treeview" id="chatAugthClick"> <a href="/users/chatBotMng"><i class="fa fa-lock"></i> <span><%= __('CHATBOT_MNG') %></span></a> </li>-->
+            <li class=" treeview"><!--<li class="active treeview">-->  
+                <a href="#">
+                  <i class="fa fa-desktop"></i> <span><%= __('CHATBOT_MNG') %></span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu" >
+                  <li><a href="/users/chatBotMng"><i class="fa  fa-circle-o"></i>챗봇 앱관리</a></li>
+                  <li><a href="#"><i class="fa fa-circle-o"></i>챗봇 상태</a></li>
+                </ul>
+              </li>
+            <!-- 추후 사용 예정 -->
+            <!-- <li class="treeview" id="apiMngClick"> <a href="/users/apiSetting"><i class="fa  fa-file-text-o"></i> <span><%= __('API_MNG') %></span></a> </li> -->
+            <li class=" treeview"><!--<li class="active treeview">-->  
+                <a href="#">
+                  <i class="fa fa-desktop"></i> <span>DashBoard 관리</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu" >
+                  <li><a href="/boardMng/boardMng"><i class="fa  fa-circle-o"></i>DashBoard 항목관리</a></li>
+                  <li><a href="/boardMng/boardUserMng"><i class="fa fa-circle-o"></i>DashBoard 사용자연결</a></li>
+                </ul>
+              </li>
+              <li class=" treeview"><!--<li class="active treeview">-->  
+                <a href="#">
+                  <i class="fa fa-desktop"></i> <span>공통관리</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu" >
+                  <li><a href="/code/codeMasterMng"><i class="fa  fa-circle-o"></i>공통코드관리</a></li>
+                  <li><a href="/menu/menuMng"><i class="fa fa-circle-o"></i> 메뉴관리</a></li>
+                  <li><a href="/auth/authMasterMng"><i class="fa fa-circle-o"></i> 권힌그룹관리</a></li>
+                  <li><a href="/user/userAuthMng"><i class="fa fa-circle-o"></i> 사용자 권한관리</a></li>
+                  <li><a href="/user/userAppMappingMng"><i class="fa fa-circle-o"></i> 사용자 앱매핑 관리</a></li>
+                </ul>
+              </li>
+      </ul>
+      <!-- // left Menu -->
+                              
+    </section>
+</aside>
+
+<script>
+    $(window).on('load', function() {
+
+        $('.treeview').find('i').each(function() {
+            var menuName = $.trim( $(this).parent().text() ).replace(/ /gi, ""); 
+            var pageTitle = $.trim( $('.content-header').text() ).replace(/ /gi, ""); 
+            if (menuName === pageTitle) {
+                $(this).parents('li').addClass('active');
+            }
+        });
+    });
+
+    $(document).ready(function(){
+
+        $('#userMngClick').click(function() {
+            var url = "/users/userMng"; 
+            $(location).attr('href',url);
+        });
+
+        $('#userAugthClick').click(function() {
+            var url = "/users/userAuthMng"; 
+            $(location).attr('href',url);
+        });
+        
+        $('#chatAugthClick').click(function() {
+            var url = "/users/chatBotMng"; 
+            $(location).attr('href',url);
+        });
+
+        $('#apiMngClick').click(function() {
+            var url = "/users/apiSetting"; 
+            $(location).attr('href',url);
+        });
+    });
+  </script>
